@@ -1,0 +1,116 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Filtered Load, Excretion and Fractional Excretion</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{--bg:#fff;--fg:#111;--bar:#f1f1f1;--bd:#ccc}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#1b1b1b;--fg:#eee;--bar:#2a2a2a;--bd:#555}}
+html,body{margin:0;background:var(--bg);color:var(--fg);font-family:Helvetica,Arial,sans-serif}
+#w{max-width:1200px;margin:0 auto;padding:8px}
+svg{width:100%;height:auto;display:block;background:#fff;border-radius:6px}
+text{font-family:Helvetica,Arial,sans-serif;fill:#111}
+.t{font-size:22px}.bn{font-size:50px;fill:#222}.sb{font-size:38px;text-anchor:middle}
+#bar button{margin-right:2px}#bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:var(--bar);border:1px solid var(--bd);border-radius:8px;padding:10px;margin-bottom:8px}
+#bar input{flex:1;min-width:220px;accent-color:#d98a00}
+button{font:inherit;padding:6px 12px;border:1px solid var(--bd);border-radius:6px;background:var(--bg);color:var(--fg);cursor:pointer}
+button.on{background:#d98a00;color:#fff;border-color:#d98a00}
+</style></head><body><div id="w">
+<div id="bar"><span id="pre"></span><span style="margin-left:8px"><b>Excretion rate</b> (% of filtered)</span><input id="sl" type="range" min="0" max="200" step="0.1" value="100"><b id="ev" style="min-width:48px">100%</b></div>
+<svg id="s" viewBox="0 0 1440 1250">
+<defs><linearGradient id="og" x1="0" x2="1"><stop offset="0" stop-color="#e49a00"/><stop offset=".5" stop-color="#ffc930"/><stop offset="1" stop-color="#d98a00"/></linearGradient>
+<clipPath id="bcl"><path d="M-45 20V125Q-45 135-35 135H35Q45 135 45 125V20Z"/></clipPath></defs>
+<g id="beakers"></g>
+<text x="50" y="212" style="font-size:46px;font-weight:700">Filtered load</text><text x="1087" y="212" style="font-size:46px;font-weight:700">Excretion rate</text>
+<text x="720" y="62" text-anchor="middle" style="font-size:22px;fill:#666">● = 4 units/min (1 bead)</text><text id="lv" x="190" y="262" text-anchor="middle" style="font-size:26px;fill:#a26a00;font-weight:700"></text><text id="rv" x="1245" y="262" text-anchor="middle" style="font-size:26px;fill:#a26a00;font-weight:700"></text>
+<g id="neph">
+<path d="M398 82C398 190 392 260 392 262C392 300 420 285 440 283H890" fill="none" stroke="#8a1a10" stroke-width="14" stroke-linecap="round"/><path d="M398 82C398 190 392 260 392 262C392 300 420 285 440 283H890" fill="none" stroke="#e0443a" stroke-width="9" stroke-linecap="round"/>
+<path d="M498 148C440 128 404 158 404 200C404 244 440 266 498 224L900 224C940 224 960 244 985 247V125C960 128 940 148 900 148Z" fill="#f9dcc0" stroke="#6a4a3a" stroke-width="2.5"/>
+<ellipse cx="440" cy="198" rx="40" ry="30" fill="#e0443a" stroke="#8a1a10" stroke-width="3"/><path d="M412 190C430 170 460 175 466 195M416 208C436 222 462 214 466 200M425 198C440 190 452 196 450 204" fill="none" stroke="#8a1a10" stroke-width="3"/>
+<g id="cells"></g>
+<path d="M370 150l12 30M376 220l8 32" stroke="#222" stroke-width="2"/><path d="M366 166l12 4-4-12zM372 238l12-2-6-12z" fill="#222"/>
+<path d="M448 190H510V180L524 190L510 200V190" fill="#fff" stroke="#222" stroke-width="2"/>
+<path d="M880 190H930V180L942 190L930 200V190" fill="#fff" stroke="#222" stroke-width="2" id="aEx"/>
+<g id="aRe"><path d="M600 210V262H590L601 282L612 262H602" fill="#fff" stroke="#222" stroke-width="2"/></g>
+<g id="aSe"><path d="M816 280V228H806L817 208L828 228H818" fill="#fff" stroke="#222" stroke-width="2"/></g>
+<text class="t" x="420" y="112">Filtration</text><text class="t" x="728" y="94">tubule</text><path d="M744 100L735 146" stroke="#222"/>
+<text class="t" id="tRe" x="530" y="197" style="font-size:24px">Reabsorption</text><text class="t" id="tSe" x="763" y="197" style="font-size:24px">Secretion</text><text class="t" x="956" y="195" style="font-size:24px">Excretion</text>
+<text class="t" x="408" y="332">Glomerulus</text><path d="M463 224L467 308" stroke="#222"/><text class="t" x="704" y="348">Peritubular capillaries</text><path d="M712 288L728 322" stroke="#222"/>
+</g>
+<g id="pts"></g>
+<g id="bnrs"></g>
+<g id="eq">
+<text x="470" y="967" text-anchor="end" style="font-size:40px;font-weight:700">Fractional Excretion =</text>
+<text x="660" y="940" text-anchor="middle" style="font-size:40px">Excretion rate</text><line x1="490" x2="830" y1="956" y2="956" stroke="#111" stroke-width="4" stroke-linecap="round"/><text x="660" y="1002" text-anchor="middle" style="font-size:40px">Filtered load</text>
+<text x="855" y="968" style="font-size:40px">× 100</text></g>
+<rect x="1010" y="905" width="395" height="120" rx="14" fill="#fbf1dc" stroke="#e2c88a" stroke-width="2"/>
+<text x="1207" y="955" text-anchor="middle" style="font-size:24px;fill:#7a5a10" id="fe2"></text><text x="1207" y="1000" text-anchor="middle" style="font-size:44px;font-weight:700;fill:#a26a00" id="fe"></text>
+<g id="info"><rect x="18" y="1050" width="1387" height="180" rx="14" fill="#f4f6f8" stroke="#c9d0d6" stroke-width="2" id="ib"/>
+<text id="i0" x="44" y="1100" style="font-size:36px;font-weight:700"></text><text id="i1" x="44" y="1148" style="font-size:28px"></text><text id="i2" x="44" y="1186" style="font-size:28px"></text><text id="i3" x="44" y="1220" style="font-size:28px"></text></g>
+</svg></div>
+<script>
+const NS='http://www.w3.org/2000/svg',$=i=>document.getElementById(i);
+const mk=(p,t,a={},h)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(h!=null)e.innerHTML=h;p.appendChild(e);return e};
+// cells
+function drawCells(d){$('cells').innerHTML='';let seed=7;const rnd=()=>{seed=seed*16807%2147483647;return seed/2147483647};
+ for(let k=0;k<17;k++)for(const y of[150,224]){if(!d){mk($('cells'),'ellipse',{cx:508+k*23,cy:y,rx:11,ry:5,fill:'#e8a6b8',stroke:'#8a3a58'});continue}
+  if(rnd()<.3)continue;const sg=y==150?1:-1;mk($('cells'),'ellipse',{cx:508+k*23+rnd()*6,cy:y+sg*rnd()*4,rx:6+rnd()*7,ry:3.5+rnd()*5,fill:'#b79b82',stroke:'#5a4638','stroke-dasharray':rnd()<.5?'3 2':'none'})}}
+drawCells(false);let dm=false;
+const deb=mk($('neph'),'g'),DB=[0,1,2,3,4,5,6].map(i=>({e:mk(deb,'circle',{r:5+(i%3)*2,fill:'#7a5a3a',stroke:'#4a3220',opacity:0}),x:520+i*65,y:175+(i%3)*12}));
+mk($('neph'),'text',{id:'c4',x:905,y:298,style:'font-size:22px;font-weight:700;fill:#237a2a'});mk($('neph'),'text',{id:'c5',x:905,y:326,style:'font-size:22px;font-weight:700;fill:#a26a00'});mk($('neph'),'text',{id:'c1',x:628,y:264,style:'font-size:20px;font-weight:700'});mk($('neph'),'text',{id:'c2',x:745,y:128,style:'font-size:19px;font-weight:700'});mk($('neph'),'text',{id:'c3',x:222,y:122,style:'font-size:20px;font-weight:700;fill:#b03030'});
+// beakers
+const LV={},fillRect=[];
+[170,1270].forEach((cx,i)=>{const g=mk($('beakers'),'g',{transform:`translate(${cx} 0)`});
+ mk(g,'rect',{x:-46,y:18,width:92,height:120,rx:6,fill:'#fff',opacity:.5});
+ const bs=[];for(let k=0;k<64;k++){const r=Math.floor(k/9.0),c=k%9;const odd=r%2;const col=Math.min(c,odd?7:8);const idx=k;
+  const row=Math.floor(k/8.5);const rr=Math.floor((k<9?0:1+Math.floor((k-9)/8.5)));
+  bs.push(null)}
+ const rowsN=[];let kk=0,rw=0;while(kk<64){const cnt=rw%2?8:9;for(let c=0;c<cnt&&kk<64;c++,kk++){const b=mk(g,'circle',{cx:-40+c*10+(rw%2?5:0),cy:129.5-rw*8.8,r:4.8,fill:'#0aa04a',stroke:'#054d20','stroke-width':1.2,opacity:0});rowsN.push(b)}rw++}
+ fillRect.push(rowsN);
+ mk(g,'path',{d:'M-45 20V125Q-45 135-35 135H35Q45 135 45 125V20',fill:'none',stroke:'#667','stroke-width':3});mk(g,'path',{d:'M-52 14H52',stroke:'#667','stroke-width':3,'stroke-linecap':'round'});
+ for(let k=1;k<5;k++)mk(g,'path',{d:`M20 ${135-k*22}H42`,stroke:'#889','stroke-width':1.5})});
+// banners
+const B=[{y:375,c:'#fdfbc4',sy:465,sc:'#fefce0',t:'amount <tspan font-weight="700">filtered</tspan> per minute <tspan font-weight="700">=</tspan> amount <tspan font-weight="700">excreted</tspan> per minute',s:'No reabsorption &amp; No secretion'},
+{y:551,c:'#dfeed6',sy:640,sc:'#ecf5e5',t:'amount <tspan font-weight="700">filtered</tspan> per minute <tspan font-weight="700">&gt;</tspan> amount <tspan font-weight="700">excreted</tspan> per minute',s:'Reabsorption'},
+{y:722,c:'#f8dccb',sy:810,sc:'#fbe9de',t:'amount <tspan font-weight="700">filtered</tspan> per minute <tspan font-weight="700">&lt;</tspan> amount <tspan font-weight="700">excreted</tspan> per minute',s:'Secretion'}];
+const bg=B.map(b=>{const g=mk($('bnrs'),'g');mk(g,'rect',{x:18,y:b.y,width:1387,height:78,fill:b.c});mk(g,'text',{class:'bn',x:32,y:b.y+57,textLength:1345,lengthAdjust:'spacingAndGlyphs'},b.t);
+ mk(g,'rect',{x:304,y:b.sy,width:816,height:58,fill:b.sc});mk(g,'text',{class:'sb',x:712,y:b.sy+42},b.s);return g});
+// presets
+const PR=[['No reabs./secretion',100],['Reabsorption',40],['Secretion',150],['FENa⁺ = 1%',1],['Prerenal azotemia (hypovolemia)',0.5],['Acute tubular necrosis',10]];
+const INFO={4:['Prerenal azotemia (due to hypovolemia): FENa⁺ < 1%','Low perfusion → ↑ aldosterone, angiotensin II, ADH → tubules avidly reabsorb Na⁺ and water.','Tubules are intact, so little Na⁺ is excreted: concentrated urine, low urine Na⁺.','Typical FENa⁺ ≈ 0.5%; BUN:creatinine ratio is often > 20.'],
+5:['Acute tubular necrosis (ATN): FENa⁺ > 2%','Ischemic or toxic injury to tubular cells impairs Na⁺ reabsorption, so more Na⁺ is lost.','Isosthenuric urine, urine Na⁺ > 40 mEq/L, muddy-brown casts; BUN:Cr often < 15.','FENa⁺ > 2% (here 10%): ~90% reabsorbed, but ~20× the Na⁺ loss of prerenal.']};
+let cond=-1;
+const pbs=[];
+PR.forEach(([n,v])=>{const b=document.createElement('button');b.textContent=n;b.onclick=()=>{$('sl').value=v;cond=PR.findIndex(p=>p[0]==n)};pbs.push(b);$('pre').appendChild(b)});
+// particles
+const P=[];$('sl').oninput=()=>{cond=-1};let acc=0,last=performance.now(),Ed=100;
+const spawn=(x,y,mode,e)=>{const el=mk($('pts'),'circle',{r:5.5,fill:'#0aa04a',stroke:'#054d20','stroke-width':1.3});P.push({el,x,y,mode,sec:Math.random(),reab:Math.random(),j:(Math.random()-.5)*28,done:false,ph:Math.random()*6})};
+function frame(now){const dt=Math.min(.05,(now-last)/1000);last=now;const E=+$('sl').value;Ed+=(E-Ed)*Math.min(1,dt*4);
+ const r=Math.max(0,1-E/100),s=Math.max(0,E/100-1);
+ if((cond==5)!==dm){dm=cond==5;drawCells(dm)}
+ for(const d of DB){d.x+=22*dt;if(d.x>960)d.x=520;d.e.setAttribute('cx',d.x);d.e.setAttribute('cy',d.y);d.e.setAttribute('opacity',dm?.9:0)}
+ const sx=cond==4?2:cond==5?.8:1;$('aRe').setAttribute('transform',`translate(601 246) scale(${sx} 1) translate(-601 -246)`);$('aRe').setAttribute('stroke-dasharray',dm?'4 3':'none');
+ $('c4').textContent=E<=100?'Reabsorbed: '+(100-E).toFixed(E<10?1:0).replace(/\.0$/,'')+'%':'Secreted: +'+(E-100).toFixed(0)+'%';$('c5').textContent='Excreted: '+(Number.isInteger(E)?E:E.toFixed(1))+'%';
+ const T=(id,t,c)=>{$(id).textContent=t;$(id).style.fill=c};
+ if(cond==4){T('c1','↑↑ Na⁺ & water reabsorption','#237a2a');T('c2','','#000');T('c3','↓ renal perfusion','#b03030')}
+ else if(cond==5){T('c1','impaired reabsorption','#8a4a1a');T('c2','injured tubular cells, casts','#8a4a1a');T('c3','','#000')}
+ else{T('c1','','#000');T('c2','','#000');T('c3','','#000')}
+ acc+=dt*4.5;while(acc>=1){acc--;spawn(452,190,'t')}
+ for(const q of P){const v=95*dt;
+  if(q.mode=='t'){q.x+=v;q.y=190+q.j*(q.x<520?.2:1)*.5;
+   if(!q.did1&&q.x>=600){q.did1=true;if(q.reab<r)q.mode='down'}
+   if(!q.did2&&q.x>=815&&q.mode=='t'){q.did2=true;if(q.sec<s)spawn(816,283,'up')}
+   if(q.x>990)q.dead=true}
+  else if(q.mode=='down'){q.y+=v*.9;q.x=601;if(q.y>=283){q.mode='cap'}}
+  else if(q.mode=='cap'){q.x+=v;q.y=283;if(q.x>880)q.dead=true}
+  else if(q.mode=='up'){q.y-=v*.9;if(q.y<=190){q.mode='t';q.did1=q.did2=true;q.j=0}}
+  q.el.setAttribute('cx',q.x);q.el.setAttribute('cy',q.y)}
+ for(let i=P.length-1;i>=0;i--)if(P[i].dead){P[i].el.remove();P.splice(i,1)}
+ $('aRe').setAttribute('opacity',Math.min(1,r*2.2));$('aSe').setAttribute('opacity',Math.min(1,s*2.2));$('aEx').setAttribute('opacity',E<2?.25:1);
+ const lv=100/200,rv=Math.min(1,Ed/200);const nl=25,nr=Math.ceil(Ed/4-1e-9);fillRect[0].forEach((b,i)=>b.setAttribute('opacity',i<nl?1:0));fillRect[1].forEach((b,i)=>b.setAttribute('opacity',i<nr?1:0));
+ $('lv').textContent='100 units/min';$('rv').textContent=(Ed<10?Ed.toFixed(1):Math.round(Ed))+' units/min';const Es=Number.isInteger(E)?E:E.toFixed(1);$('ev').textContent=Es+'%';
+ $('fe2').textContent=`${Es} ÷ 100 × 100`;$('fe').textContent='= '+Es+'%';
+ pbs.forEach((b,i)=>b.className=i==cond?'on':'');
+ const inf=INFO[cond],ib=$('ib');if(inf){ib.setAttribute('fill',cond==4?'#e6f1e0':'#f9e3d6');['i0','i1','i2','i3'].forEach((id,k)=>$(id).textContent=inf[k])}
+ else{ib.setAttribute('fill','#f4f6f8');$('i0').textContent='Tip: choose a clinical preset';$('i1').textContent='Prerenal azotemia (hypovolemia) shows avid Na⁺ reabsorption (FENa⁺ < 1%);';$('i2').textContent='acute tubular necrosis shows failed reabsorption (FENa⁺ > 2%).';$('i3').textContent=''}
+ const k=E==100?0:E<100?1:2;$('tRe').setAttribute('opacity',k==1?1:0);$('tSe').setAttribute('opacity',k==2?1:0);bg.forEach((g,i)=>g.setAttribute('opacity',i==k?1:.28));
+ requestAnimationFrame(frame)}
+requestAnimationFrame(frame);
+</script></body></html>
